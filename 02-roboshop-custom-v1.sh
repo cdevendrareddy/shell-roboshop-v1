@@ -10,6 +10,14 @@ common_sg="sg-02f919d5271d64a6b"
 mongodb_sg="sg-0186f53f5af68234c"
 user_sg="sg-077916cda9d29f844"
 catalogue_sg="sg-0bab365385b2b3799"
+shipping_sg="sg-08de5b70d9118f85f"
+redis_sg="sg-0c3cad5b735e94c9c"
+rabbitmq_sg="sg-0f2a1a18e5a225453"
+payment_sg="sg-0b9422098a44b9fec"
+mysql_sg="sg-066fee7872d6b97a0"
+frontend_sg="sg-0889c7aa362431c68"
+dispatch_sg="sg-00dbbdee2ea212b05"
+cart_sg="sg-0c0474dcd4e49ec9b"
 
 for instance in "$@"
 do
@@ -19,6 +27,14 @@ do
         mongodb) service_sg="$mongodb_sg" ;;
         user) service_sg="$user_sg" ;;
         catalogue) service_sg="$catalogue_sg" ;;
+        shipping) service_sg="$shipping_sg" ;;
+        redis) service_sg="$redis_sg" ;;
+        rabbitmq) service_sg="$rabbitmq_sg" ;;
+        payment) service_sg="$payment_sg" ;;
+        mysql) service_sg="$mysql_sg" ;;
+        frontend) service_sg="$frontend_sg" ;;
+        dispatch) service_sg="$dispatch_sg" ;;
+        cart) service_sg="$cart_sg" ;;
         *) echo "Invalid service: $instance"; exit 1 ;;
     esac
 
