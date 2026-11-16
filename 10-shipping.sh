@@ -37,7 +37,13 @@ dnf module enable maven:3.9 -y &>> $logs_file
 dnf install maven java-25-openjdk-devel -y &>> $logs_file
 validate $? "Installing Maven and Java"
 
+alternatives --set java /usr/lib/jvm/java-25-openjdk/bin/java &>> $logs_file
+validate $? "Setting Java alternative"
 
+echo "export JAVA_HOME=$(dirname $(dirname $(readlink -f /usr/bin/java)))" > /etc/profile.d/java.sh
+source /etc/profile.d/java.sh
+echo $JAVA_HOME
+validate $? "Setting JAVA_HOME for maven"
 
 
 # curl http://localhost:8080/health
