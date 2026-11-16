@@ -89,5 +89,8 @@ fi
 systemctl restart catalogue &>> $logs_file
 validate $? "Restarting catalogue service"
 
+curl http://localhost:8080/health
+validate $? "Checking catalogue service health"
+
 echo "$(timestamp) [INFO] Script completed in $SECONDS seconds"
 echo "$(timestamp) [INFO] === Script completed execution ===" | tee -a $logs_file
