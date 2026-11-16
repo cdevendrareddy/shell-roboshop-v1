@@ -51,35 +51,35 @@ rm -rf /app
 mkdir -p /app
 validate $? "Creating /app directory"
 
-curl -L -o /tmp/catalogue.zip https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/catalogue-v4.zip &>> $logs_file
-validate $? "Downloading catalogue application zip file"
+curl -L -o /tmp/cart.zip https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/cart-v4.zip &>> $logs_file
+validate $? "Downloading cart application zip file"
 
 cd /app
-unzip /tmp/catalogue.zip &>> $logs_file
-validate $? "Extracting catalogue application"
+unzip /tmp/cart.zip &>> $logs_file
+validate $? "Extracting cart application"
 
 cd /app
 npm install &>> $logs_file
-validate $? "Installing catalogue application dependencies"
+validate $? "Installing cart application dependencies"
 
-sed -i "s/DOMAIN_NAME/${domain_name}/" "$scripts_dir/catalogue.service"
-cp "$scripts_dir/catalogue.service" /etc/systemd/system/catalogue.service
+sed -i "s/DOMAIN_NAME/${domain_name}/" "$scripts_dir/cart.service"
+cp "$scripts_dir/cart.service" /etc/systemd/system/cart.service
 
 systemctl daemon-reload &>> $logs_file
-systemctl enable catalogue &>> $logs_file
-systemctl start catalogue &>> $logs_file
-validate $? "Starting catalogue service"
+systemctl enable cart &>> $logs_file
+systemctl start cart &>> $logs_file
+validate $? "Starting cart service"
 
 
 
-systemctl restart catalogue &>> $logs_file
-validate $? "Restarting catalogue service"
+systemctl restart cart &>> $logs_file
+validate $? "Restarting cart service"
 
 
 sleep 30 
 
 curl http://localhost:8080/health
-validate $? "Checking catalogue service health"
+validate $? "Checking cart service health"
 
 echo "$(timestamp) [INFO] Script completed in $SECONDS seconds"
 echo "$(timestamp) [INFO] === Script completed execution ===" | tee -a $logs_file
