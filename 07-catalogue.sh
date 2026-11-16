@@ -76,11 +76,11 @@ validate $? "Adding MongoDB repo"
 dnf install mongodb-mongosh -y &>> $logs_file
 validate $? "Installing MongoDB shell"
 
-product_count=$(mongosh --host <MONGODB-SERVER-IPADDRESS> --quiet --eval 'db.getSiblingDB("catalogue").products.countDocuments()') 2>>$logs_file
+product_count=$(mongosh --host mongodb.opsbydev.online --quiet --eval 'db.getSiblingDB("catalogue").products.countDocuments()') 2>>$logs_file
 validate $? "Checking product count in MongoDB"
 
 if [ $product_count -eq 0]; then
-    mongosh --host <MONGODB-SERVER-IPADDRESS> </app/db/master-data.js
+    mongosh --host mongodb.opsbydev.online </app/db/master-data.js
     validate $? "Loading master data into MongoDB"
 else 
     echo -e "$(timestamp) [INFO] Master data already exists in MongoDB, ${Y}skipping master data load${N}"
