@@ -71,11 +71,8 @@ systemctl start cart &>> $logs_file
 validate $? "Starting cart service"
 
 
-
-# systemctl restart cart &>> $logs_file
-# validate $? "Restarting cart service"
-
-
+curl http://localhost:8080/health
+validate $? "Checking user service health"
 
 echo "$(timestamp) [INFO] Script completed in $SECONDS seconds"
 echo "$(timestamp) [INFO] === Script completed execution ===" | tee -a $logs_file

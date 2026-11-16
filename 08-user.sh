@@ -71,13 +71,6 @@ systemctl start user &>> $logs_file
 validate $? "Starting user service"
 
 
-
-systemctl restart user &>> $logs_file
-validate $? "Restarting user service"
-
-
-sleep 30 
-
 curl http://localhost:8080/health
 validate $? "Checking user service health"
 
