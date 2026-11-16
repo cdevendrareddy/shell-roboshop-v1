@@ -3,6 +3,7 @@
 user_id=$(id -u)
 logs_folder="/var/log/shell-practice"
 logs_file="${logs_folder}/${0}.log"
+domain_name="opsbydev.online"
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
@@ -45,8 +46,27 @@ else
     echo -e "$(timestamp) [INFO] roboshop user already exists,${Y}skipping user creation${N}"
 fi
 
+mkdir -p /app
+validate $? "Creating /app directory"
 
+curl -L -o /tmp/catalogue.zip https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/catalogue-v4.zip &>> $logs_file
+validate $? "Downloading catalogue application zip file"
 
+cd /app
+unzip /tmp/catalogue.zip &>> $logs_file
+validate $? "Extracting catalogue application"
+
+cd /app
+npm install &>> $logs_file
+validate $? "Installing catalogue application dependencies"
+
+sed -i "s/DOMAIN_NAME/${domain_name}/" catalogue.service
+cp catalogue.service /etc/systemd/system/catalogue.service
+
+systemctl daemon-reload &>> $logs_file
+systemctl enable catalogue &>> $logs_file
+systemctl start catalogue &>> $logs_file
+validate $? "Starting catalogue service"
 
 echo "$(timestamp) [INFO] Script completed in $SECONDS seconds"
 echo "$(timestamp) [INFO] === Script completed execution ===" | tee -a $logs_file
