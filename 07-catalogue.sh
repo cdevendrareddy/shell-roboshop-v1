@@ -86,5 +86,6 @@ else
     echo -e "$(timestamp) [INFO] Master data already exists in MongoDB, ${Y}skipping master data load${N}"
 fi
 
+systemctl restart catalogue &>> $logs_file
 echo "$(timestamp) [INFO] Script completed in $SECONDS seconds"
 echo "$(timestamp) [INFO] === Script completed execution ===" | tee -a $logs_file
