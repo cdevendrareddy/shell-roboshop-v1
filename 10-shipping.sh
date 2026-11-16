@@ -45,9 +45,55 @@ source /etc/profile.d/java.sh
 echo $JAVA_HOME
 validate $? "Setting JAVA_HOME for maven"
 
+id roboshop &>> $logs_file
+if [ $? -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+    validate $? "Creating roboshop user"
+else
+    echo -e "$(timestamp) [INFO] roboshop user already exists,${Y}skipping user creation${N}"
+fi
 
-# curl http://localhost:8080/health
-# validate $? "Checking shipping service health"
+rm -rf /app
+mkdir -p /app
+validate $? "Creating /app directory"
+
+curl -L -o /tmp/shipping.zip https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/shipping-v4.zip &>> $logs_file
+validate $? "Downloading shipping application zip file"
+
+cd /app
+unzip /tmp/shipping.zip &>> $logs_file
+validate $? "Extracting shipping application"
+
+cd /app
+mvn clean package
+validate $? "Building shipping application"
+
+mv target/shipping.jar shipping.jar
+validate $? "Renaming shipping jar file"
+
+sed -i "s/DOMAIN_NAME/${domain_name}/" "$scripts_dir/shipping.service"
+cp "$scripts_dir/shipping.service" /etc/systemd/system/shipping.service
+
+dnf install mysql -y &>> $logs_file
+validate $? "Installing MySQL client"
+
+mysql -h mysql.${domain_name} -uroot -pRoboShop@1 < /app/db/master-data.sql
+validate $? "Loading shipping database schema"
+
+mysql -h mysql.${domain_name} -uroot -pRoboShop@1 < /app/db/app-user.sql
+validate $? "Creating shipping database user and granting privileges"
+
+
+systemctl daemon-reload
+systemctl enable shipping
+systemctl start shipping
+validate $? "Starting and enabling shipping service"
+
+
+sleep 20
+
+curl http://localhost:8080/actuator/health
+validate $? "Checking shipping service health"
 
 echo "$(timestamp) [INFO] Script completed in $SECONDS seconds"
 echo "$(timestamp) [INFO] === Script completed execution ===" | tee -a $logs_file
