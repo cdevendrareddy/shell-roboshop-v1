@@ -89,6 +89,9 @@ fi
 systemctl restart catalogue &>> $logs_file
 validate $? "Restarting catalogue service"
 
+
+sleep 30 
+
 curl http://localhost:8080/health
 validate $? "Checking catalogue service health"
 
