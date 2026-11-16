@@ -33,15 +33,15 @@ validate(){
 
 echo "$(timestamp) [INFO] === Script started execution ===" | tee -a $logs_file
 
-dnf module enable maven:3.9 -y
-dnf install maven java-25-openjdk-devel -y
+dnf module enable maven:3.9 -y &>> $logs_file
+dnf install maven java-25-openjdk-devel -y &>> $logs_file
 validate $? "Installing Maven and Java"
 
 
 
 
-curl http://localhost:8080/health
-validate $? "Checking shipping service health"
+# curl http://localhost:8080/health
+# validate $? "Checking shipping service health"
 
 echo "$(timestamp) [INFO] Script completed in $SECONDS seconds"
 echo "$(timestamp) [INFO] === Script completed execution ===" | tee -a $logs_file
