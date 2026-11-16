@@ -79,7 +79,7 @@ validate $? "Installing MongoDB shell"
 product_count=$(mongosh --host mongodb.opsbydev.online --quiet --eval 'db.getSiblingDB("catalogue").products.countDocuments()') 2>>$logs_file
 validate $? "Checking product count in MongoDB"
 
-if [ $product_count -eq 0]; then
+if [ $product_count -eq 0 ]; then
     mongosh --host mongodb.opsbydev.online </app/db/master-data.js
     validate $? "Loading master data into MongoDB"
 else 
