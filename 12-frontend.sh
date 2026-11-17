@@ -33,9 +33,9 @@ validate(){
 
 echo "$(timestamp) [INFO] === Script started execution ===" | tee -a $logs_file
 
-dnf module disable nginx -y
-dnf module enable nginx:1.26 -y
-dnf install nginx -y
+dnf module disable nginx -y &>> $logs_file
+dnf module enable nginx:1.26 -y &>> $logs_file
+dnf install nginx -y &>> $logs_file
 validate $? "Installing Nginx"
 
 systemctl enable nginx
@@ -53,6 +53,10 @@ validate $? "Changing directory to Nginx html folder"
 
 unzip /tmp/frontend.zip
 validate $? "Extracting frontend application"
+
+sed -i "s/DOMAIN_NAME/$domain_name/g" "$scripts_dir/roboshop.conf"
+cp "$scripts_dir/roboshop.conf" /etc/nginx/default.d/roboshop.conf
+validate $? "Copying Nginx configuration file"
 
 nginx -t
 validate $? "Testing Nginx configuration"
