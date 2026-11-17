@@ -63,7 +63,7 @@ validate $? "Testing Nginx configuration"
 systemctl restart nginx
 validate $? "Restarting Nginx service"
 
-sleep 10
+sleep 30
 
 curl http://localhost:8080/health
 validate $? "Checking frontend service health"
